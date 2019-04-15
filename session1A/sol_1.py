@@ -1,5 +1,6 @@
 from random import shuffle
 
+
 class State:
     def __init__(self, rows_, cols_):
         self.rows = rows_
@@ -21,11 +22,6 @@ class State:
                     continue
                 if (r, c) in self.visited:
                     continue
-
-                if len(self.visited) == self.rows*self.cols - 1:
-                    move_l.append((r, c))
-                    break
-                
                 if r == prev_r or c == prev_c:
                     continue
                 if r - c == prev_r - prev_c or r + c == prev_r + prev_c:
@@ -35,31 +31,24 @@ class State:
 
         return move_l
 
-
-
-    def search(self, prev_r, prev_c, cache):
+    def search(self, prev_r, prev_c):
         if len(self.visited) == self.rows*self.cols:
             return (True, [])
 
         p_l = self.get_possible_move(prev_r, prev_c)
-        #print(len(p_l))
         if not p_l:
             return (False, [])
+
         shuffle(p_l)
         for rp, cp in p_l:
             self.mark_visited(rp, cp)
-            ret_b, l_ret = self.search(rp, cp, cache)
+            ret_b, l_ret = self.search(rp, cp)
             self.un_visit(rp, cp)
-            
+
             if ret_b:
                 return (True, [(rp, cp)] + l_ret)
 
-
-
         return (False, [])
-
-
-
 
 
 nt = int(input())
@@ -71,12 +60,10 @@ for t in range(nt):
 
 for idx, (r, c) in enumerate(test_cases):
     st = State(r, c)
-    val, o_l = st.search(None, None, {})
+    val, o_l = st.search(None, None)
     if val:
         print("Case #" + str(idx + 1) + ": POSSIBLE")
         for r, c in o_l:
             print(str(r) + " " + str(c))
     else:
         print("Case #" + str(idx + 1) + ": IMPOSSIBLE")
-            
-        
